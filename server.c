@@ -6,39 +6,42 @@
 /*   By: yislam <yislam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/02 16:02:11 by yislam            #+#    #+#             */
-/*   Updated: 2022/10/02 18:06:43 by yislam           ###   ########.fr       */
+/*   Updated: 2022/10/04 20:36:34 by yislam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	sig_usr(int sig)
+void	ft_bit_editing(int x)
 {
-	static char	str = 0;
-	static int	get_byte = 0;
+	static int	bit = 7;
+	static int	set = 0;
 
-	if (sig == SIGUSR1)
-		str = str | 1;
-	if (++get_byte == 8)
+	set += (x << bit);
+	if (bit == 0)
 	{
-		get_byte = 0;
-		if (!str)
-			ft_printf("\n");
-		ft_printf("%c", str);
-		str = 0;
+		ft_printf("%c", set);
+		bit = 7;
+		set = 0;
 	}
 	else
-		str <<= 1;
+		bit--;
+}
+
+void	ft_signal_catch(int x)
+{
+	if (x == SIGUSR1)
+		ft_bit_editing(1);
+	else
+		ft_bit_editing(0);
 }
 
 int	main(void)
 {
 	ft_printf("process_id => %d\n", getpid());
-	signal(SIGUSR1, sig_usr);
-	signal(SIGUSR2, sig_usr);
+	signal(SIGUSR1, ft_signal_catch);
+	signal(SIGUSR2, ft_signal_catch);
 	while (1)
-	{
 		pause();
-	}
 	return (0);
 }

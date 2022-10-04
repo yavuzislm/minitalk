@@ -6,16 +6,16 @@
 /*   By: yislam <yislam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/02 16:02:11 by yislam            #+#    #+#             */
-/*   Updated: 2022/10/02 20:27:03 by yislam           ###   ########.fr       */
+/*   Updated: 2022/10/04 20:38:39 by yislam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	ft_kill(int pid, char *str)
+void	ft_bit_and_shift(int pid, char *str)
 {
-	int		i;
-	char	c;
+	int				i;
+	unsigned char	c;
 
 	while (*str)
 	{
@@ -23,18 +23,12 @@ void	ft_kill(int pid, char *str)
 		c = *str++;
 		while (i--)
 		{
-			if (c >> i & 1)
+			if ((c >> i) & 1)
 				kill(pid, SIGUSR1);
 			else
 				kill(pid, SIGUSR2);
-			usleep(50);
+			usleep(61);
 		}
-	}
-	i = 8;
-	while (i--)
-	{
-		kill(pid, SIGUSR2);
-		usleep(50);
 	}
 }
 
@@ -50,5 +44,5 @@ int	main(int argc, char **argv)
 		ft_printf("yanlış girdin kanka");
 		return (0);
 	}
-	ft_kill(ft_atoi(argv[1]), argv[2]);
+	ft_bit_and_shift(ft_atoi(argv[1]), argv[2]);
 }

@@ -1,56 +1,41 @@
-NAMESERVER = server
-NAMECLIENT = client
-NAMESERVERBNS = server_bonus
-NAMECLIENTBNS = client_bonus
-NAME = none.c
-LIB = ./ft_printf/libftprintf.a
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: yislam <yislam@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/10/04 20:11:56 by yislam            #+#    #+#              #
+#    Updated: 2022/10/04 20:12:13 by yislam           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME = minitalk
+SRCLIENT =   client.c
+OBJSCLIENT = $(SRCLIENT:.c=.o)
+
 SRCSERVER = server.c
-SRCCLIENT = client.c
-SRCSERVERBNS = server_bonus.c
-SRCCLIENTBNS = client_bonus.c
-FLAGS = -Wall -Wextra -Werror
-CC = gcc
 OBJSERVER = $(SRCSERVER:.c=.o)
-OBJCLIENT = $(SRCCLIENT:.c=.o)
-OBJSERVERBNS = $(SRCSERVERBNS:.c=.o)
-OBJCLIENTBNS = $(SRCCLIENTBNS:.c=.o)
 
-all: $(LIB) $(NAMESERVER) $(NAMECLIENT)
+CFLAGS = -Wall -Wextra -Werror
+LIB = ./ft_printf/libftprintf.a 
 
-$(NAME) : all
+all: $(NAME)
 
-bonus: $(LIB) $(NAMESERVERBNS) $(NAMECLIENTBNS)
-
-$(LIB):
-	make -C ./ft_printf
-
-$(NAMESERVER) : $(OBJSERVER)
-	$(CC) $(OBJSERVER) -o $(NAMESERVER) $(LIB)
-
-$(NAMECLIENT) : $(OBJCLIENT)
-	$(CC) $(OBJCLIENT) -o $(NAMECLIENT) $(LIB)
-
-$(NAMESERVERBNS) : $(OBJSERVERBNS)
-	$(CC) $(OBJSERVERBNS) -o $(NAMESERVERBNS) $(LIB)
-
-$(NAMECLIENTBNS) : $(OBJCLIENTBNS)
-	$(CC) $(OBJCLIENTBNS) -o $(NAMECLIENTBNS) $(LIB)
+$(NAME): $(OBJSERVER) $(OBJSCLIENT)
+	@make -C ./ft_printf
+	@gcc -o server $(SRCSERVER) $(CFLAGS) $(LIB)
+	@gcc -o client $(SRCLIENT) $(CFLAGS) $(LIB)
 
 clean:
-	rm -rf $(OBJSERVER) $(OBJCLIENT) $(OBJSERVERBNS) $(OBJCLIENTBNS)
+	rm -f $(OBJSERVER) $(OBJSCLIENT)
+	rm -f ./ft_printf/*.o
 
 fclean: clean
-	rm -rf $(NAMESERVER) $(NAMECLIENT) $(NAMESERVERBNS) $(NAMECLIENTBNS)
+	rm -f server client
+	rm -f ./ft_printf/*.o ./ft_printf/*.a
 
-ffclean: fclean
-	make fclean -C ./ft_printf
+re: fclean all
 
-.c.o:
-	$(CC) $(FLAGS) -c $^ -o $@
+.PHONY: all clean fclean re
 
-norm:
-	norminette *.[ch]
-
-re:fclean all
-
-.PHONY : re fclean clean all ffclean norm
